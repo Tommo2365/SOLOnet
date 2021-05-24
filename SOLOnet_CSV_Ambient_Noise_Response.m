@@ -132,7 +132,15 @@ elseif pltName == 'Response' || pltName == 'r' || pltName == 'response'
     
     % Find 90% of most common value
     mode = mode(yArray)
-    percentile = mode*0.9    
+    percentile = mode*0.9
+    
+    % Find start of rise
+   
+    [minValues, idx] = mink(yArray,50);      %find lowest values
+    rise = minValues(8:22);                  %from last lowest value, counting forwards, make new array of length 15 
+    xRise = xTime(1:15);                     %time axis
+   
+    
     % show standard deviation in command window
     stdDev = std(yArray);
     
@@ -171,13 +179,13 @@ elseif pltName == 'Response' || pltName == 'r' || pltName == 'response'
     
     % make a plot
     rFig2 = subplot(1,2,2);
-    scatter(xTime, yAxis);
+    scatter(xRise, rise);
     grid on;
     title([pltName,' at ',tempValue,'ºC']);
     xlabel('Time [{\it s}]');
     ylabel('SOLOnet Temperature Reading [{\it ºC}]');
     %xlim([0 120]);
-    ylim([550 yMaxPara]);  % use median to find approriate axis
+    %%ylim([550 yMaxPara]);  % use median to find approriate axis
     
     % write file name a savefig
     figName = sprintf( '%s', datestr(now,'yyyymmdd_HH_MM_SS_'), pltName,'_', SN, '.fig');
@@ -240,7 +248,7 @@ elseif pltName == 'Ambient' || pltName == 'a' || pltName == 'ambient'
         %y = flipud(Error);
     end
    
-    % make an offset so data starts at zero
+    % make an offset so y-data starts at zero
     offsetVal = yn(1,1);
     
     if applyOffset == 'Y' || applyOffset == 'y' || applyOffset == '1';

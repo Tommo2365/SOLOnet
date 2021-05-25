@@ -123,6 +123,7 @@ elseif pltName == 'Response' || pltName == 'r' || pltName == 'response'
     % declae array
     %n = fscanf(inFile,formatSpec); % use for txt files
     yArray = matArray(:, 1);
+    yArray = flipud(yArray);
     L = length(yArray);
     xArray = [1:1:L].';
     
@@ -135,11 +136,22 @@ elseif pltName == 'Response' || pltName == 'r' || pltName == 'response'
     percentile = mode*0.9
     
     % Find start of rise
+    %[minValues, idx] = mink(yArray,50);      %find lowest value and make array from that point of length 50
+        %if minValues == minValues;
+            %minValues(+1);
+        %end 
+    
+    [absdist, nearest] = min(abs(yArray - 199));   %find index of lowest value in yArray
    
-    [minValues, idx] = mink(yArray,50);      %find lowest values
-    rise = minValues(8:22);                  %from last lowest value, counting forwards, make new array of length 15 
-    xRise = xTime(1:15);                     %time axis
-   
+    
+    if nearest == 199
+        nearest = nearest + 1;
+    end
+    
+    yArraySplit2 = yArray(nearest : end); % split array at lowest value
+    
+    rise = yArraySplit2(1:15);                  %from last lowest value, counting forwards, make new array of length 15 
+    xRise = xTime(1:15);                        %time axis
     
     % show standard deviation in command window
     stdDev = std(yArray);
@@ -159,7 +171,7 @@ elseif pltName == 'Response' || pltName == 'r' || pltName == 'response'
     % save file as xlsx
 
     % flip y-axis data upside down
-    yAxis = flipud(yArray);
+    yAxis = yArray;
 
     A = [xTime, yAxis];
 
